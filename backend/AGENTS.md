@@ -318,6 +318,10 @@ For recency, DDGS 9.14.1 uses only enabled Brave, DuckDuckGo, and Yahoo engines
 that honor `timelimit`: `auto`/`all` resolves to this set, incompatible configured
 engines are removed, and an empty set falls back to it. Re-check on DDGS upgrades.
 
+### Tavily Fetch
+
+Title fallback: result URL, then request URL.
+
 ### File Upload
 
 Multi-file uploads convert documents; outlines skip fenced code:
