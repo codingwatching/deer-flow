@@ -1256,6 +1256,28 @@ The chat header also shows a context-window gauge when the selected model has a 
 
 ### Sub-Agents
 
+Ordinary `task` calls accept `context_mode="isolated"` (default) or
+`context_mode="snapshot"`. Isolated tasks receive their delegated prompt as
+before. Snapshot tasks also receive the parent's retained conversation and
+compaction summary, captured at dispatch as historical background. This helps
+handoffs that depend on earlier requirements or failed approaches, at the cost
+of additional input tokens. Retained text, tool-call descriptions/results, and
+JSON-serializable media input blocks are carried over. Binary or otherwise
+unserializable media blocks become an explicit omission notice; surrounding
+conversation remains available. Parent system prompts, hidden framework
+messages (such as injected memory and todo reminders), reasoning blocks, tool
+execution metadata, and pending tool calls are excluded. Tool-call descriptions
+require a retained matching result, including calls alongside the current task.
+Valid hidden user clarification responses remain part of the conversation. The child
+keeps its own role, model, tools, and skill restrictions. Parent tool records
+cannot satisfy child execution checks. Parent and child histories evolve
+independently afterward; shared sandbox/filesystem behavior is unchanged.
+Snapshot mode does not restore already-compacted messages or promise prompt
+cache reuse. Durable `batch_task` items still require self-contained prompts.
+
+For a manual, synthetic comparison of complete handoffs and snapshots, see the
+[context snapshot evaluation](backend/scripts/benchmark/context_snapshot/README.md).
+
 Custom Agents support an optional Unicode display name, including Chinese and
 emoji. Open an agent's **Agent settings → Display name** to set it (up to 100
 Unicode code points), or leave it blank to show the existing identifier. Control

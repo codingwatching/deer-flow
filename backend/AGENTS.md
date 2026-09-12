@@ -93,6 +93,9 @@ When making code changes, you MUST update the relevant documentation:
 
 ### Backend Benchmarks
 
+`scripts/benchmark/context_snapshot/`: explicit `run-live` needs provider env
+vars; `summarize` and pytest are offline. See its README for the protocol.
+
 `scripts/benchmark/` contains standalone, reproducible measurements and
 evaluations of production backend behavior. A benchmark may import the
 production function it measures, but it must not duplicate or introduce an
