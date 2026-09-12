@@ -531,6 +531,9 @@ export interface Translations {
     backToGallery: string;
     settings: string;
     settingsTitle: string;
+    settingsDisplayName: string;
+    settingsDisplayNameTooLong: string;
+    settingsDisplayNameHint: string;
     settingsDescription: string;
     settingsModel: string;
     settingsModelDefault: string;
