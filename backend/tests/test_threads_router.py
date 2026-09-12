@@ -2730,7 +2730,7 @@ def test_branch_thread_uses_materialized_history_and_overwrites_fresh_seed(monke
     source_accessor.aget = source_aget
     branch_accessor = SimpleNamespace(aupdate=branch_aupdate)
 
-    def build_accessor(_request, *, thread_id, assistant_id=None, checkpoint_id=None):
+    async def build_accessor(_request, *, thread_id, assistant_id=None, checkpoint_id=None):
         assert thread_id == source_thread_id
         return source_accessor, {
             "configurable": {
@@ -2849,7 +2849,7 @@ def test_branch_thread_preserves_unlinked_legacy_histories(
     source_accessor = SimpleNamespace(ahistory=source_ahistory, aget=unexpected_lineage_read)
     branch_accessor = SimpleNamespace(aupdate=branch_aupdate)
 
-    def build_accessor(_request, *, thread_id, assistant_id=None, checkpoint_id=None):
+    async def build_accessor(_request, *, thread_id, assistant_id=None, checkpoint_id=None):
         assert thread_id == source_thread_id
         return source_accessor, {
             "configurable": {
@@ -2984,7 +2984,7 @@ def test_branch_thread_real_mutation_graph_finishes_without_scheduling(monkeypat
         aget=AsyncMock(side_effect=lambda config: next(item for item in source_history if item.config["configurable"]["checkpoint_id"] == config["configurable"]["checkpoint_id"])),
     )
 
-    def source_builder(_request, *, thread_id, assistant_id=None, checkpoint_id=None):
+    async def source_builder(_request, *, thread_id, assistant_id=None, checkpoint_id=None):
         if thread_id != source_thread_id:
             raise AssertionError("fresh branches must use the dedicated mutation graph")
         return source_accessor, {
