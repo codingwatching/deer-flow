@@ -952,7 +952,9 @@ This release closes that milestone with **765 merged pull requests**.
   upgrade and no-ops on healthy shapes. `RunChangeClockRow` and
   `UserPreferenceRow` are also registered in the ORM model registry so
   `create_all` and autogenerate see every table through explicit imports
-  instead of module side effects.
+  instead of module side effects. Rolling back the repair to
+  `0024_project_documents` intentionally leaves the ancestor-owned schema and
+  existing change positions intact; the repair downgrade is a no-op.
 - **nginx:** Extend the 600-second read timeout to the two remaining locations
   whose routes wait on the Gateway, both left on nginx's 60-second default by
   the thread-route fix. Behind the `/api/` catch-all, the stateless
