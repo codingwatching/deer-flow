@@ -1734,6 +1734,10 @@ and the [request contract](backend/docs/API.md#referencing-a-previous-conversati
 
 ### Long-Term Memory
 
+The opt-in [DeerMem scope-isolation benchmark](backend/scripts/benchmark/deermem_scope_isolation/README.md)
+checks semantic safety across facts and summaries, and fact routing across users
+and agents. Failed extraction attempts are retryable execution errors, not safety passes.
+
 For DeerMem, `memory.backend_config.storage_class: markdown` opts into tolerant
 summary reads while keeping JSON writes and the existing UI. A hand-edited
 `memory.json` can contain its JSON object inside a fenced `memory-json` block;
