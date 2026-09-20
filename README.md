@@ -1578,6 +1578,17 @@ The Hash counts remote VMs and in-flight creates, repairs interrupted creates
 from E2B metadata, grace-protects stale inventory omissions, and blocks new
 creates while Redis or initial inventory is unavailable. Run Redis with persistence, non-evicting memory, and HA.
 
+E2B reconciliation renews active VMs with a positive timeout covering its
+configured cadence, even when `idle_timeout` is zero or shorter than that
+cadence. Warm VMs retain the configured idle-timeout behavior. Expired local
+warm entries do not directly free shared capacity: remote inventory must
+confirm disappearance through the existing grace period first.
+Active renewal completes before release sets the warm timeout, so a concurrent
+maintenance pass cannot extend an idle VM's lifetime. Warm-entry cleanup also
+preserves ownership acquired by a new request during the sweep.
+Ownership heartbeats remain independent of slow E2B timeout requests, preventing
+control-plane delays from making active sandbox leases expire.
+
 E2B snapshots `skills.container_path` when the provider starts and includes the
 canonical root in its thread identity, warm-pool seed, and remote metadata. A
 VM created for a different root is never adopted; reconciliation reaps it after
