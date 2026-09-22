@@ -1280,13 +1280,25 @@ A managed package declares exactly one standard PEP 621 entry point:
 acme = "acme_deerflow_extension:install"
 ```
 
-That callable uses the standalone `deerflow-extension-api` contract and can register five
+That callable uses the standalone `deerflow-extension-api` contract and can register several
 contribution kinds: isolated middleware at semantic lead/subagent model or tool positions,
 lead and subagent task-lifecycle hooks, observers for DeerFlow-owned model calls that are
 not wrapped by middleware model-call hooks (goal, memory, title, and summarization),
 Gateway-lifetime services, and eager FastAPI HTTP routers. The contract package has no
 framework dependencies; extensions must declare FastAPI, LangChain, LangGraph, or other
 libraries they import.
+
+Full-stack contributions can additionally provide browser pages, conversation actions,
+authenticated backend operations and model tools through the
+[plugin APIs](docs/full-stack-plugins.md). The independent
+[bookmarks example](examples/deerflow-extension-bookmarks/README.md) demonstrates
+one package with persistent user data, its own sidebar page and a read-only search tool.
+Reopening a bookmark resolves the conversation's current agent through the host, so
+custom-agent conversations retain their original chat entry point, including older bookmarks.
+Installation and activation remain deployment-controlled; Capability Center shows plugin
+information and status. Browser code runs as trusted same-origin code.
+The browser API and inline `BrowserModule.code` transport are experimental. The
+plugin guide describes an additive path to manifests and packaged static resources.
 
 DeerFlow allocates a task-scoped extension store only for middleware, lifecycle, or
 system-model observation. Services receive app-scoped runtime dependencies after Gateway
@@ -1552,6 +1564,8 @@ For file acceptance criteria, an empty regular file in the shared workspace can 
 Content-less sub-agent final messages report `No response generated` instead of the literal text `None`. A content-less provider-error fallback reports its structured error detail when available.
 
 An ordinary `task` also receives a defensive snapshot of the dispatching run's current uploads. This lets eligible sub-agents use `list_uploaded_files` to find earlier-turn files without returning same-turn attachments as historical. Delayed or recovered `batch_task` workers leave this tool disabled because they have no valid turn-local upload boundary.
+
+Durable `batch_task` workers use one app-owned plugin snapshot for tool assembly and execution. Recovered tasks adopt the new worker's plugin snapshot after a Gateway restart; plugin objects are never stored in durable task records.
 
 Ordinary `task` delegation and explicit durable `batch_task` execution share the startup-scoped `subagent_runtime` process capacity. Batch mode keeps large independent item sets in SQL with separate total, live, and running limits, restart recovery, bounded results, and a thread-scoped Web UI panel. The panel pages through bounded previews on demand; full stored result text is available only through the owner-scoped JSONL export, while internal execution and authorization context never enters owner-facing responses. If the batch worker is later stopped or disabled, threads with persisted batches retain read-only item inspection and JSONL export; execution controls remain disabled until the worker is running again. See `config.example.yaml` and [the implementation contract](docs/plans/2026-08-24-subagent-batch-capacity-implementation.md) for limits and recovery semantics.
 
